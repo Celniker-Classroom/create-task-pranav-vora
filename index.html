@@ -7,7 +7,42 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Your html goes here...</h1>
+    <p>Comment: I will be making a weather app for my ap csp create task.
+         It will use some sort of free API to get the data for the current weather. 
+        It will utilize user input since the user can select the city he/she wants to view. 
+        Furthermore, the program will use a list to store the different cities. 
+        It will use iteration with a parameter with the current weather data to update and display the weather conditions every few minutes.
+         Based on the type of weather, the program will use selection to display the appropriate image for the weather conditions as well as to display weather alerts.
+          For example, if it is sunny, the background will depict a sunny background. </p>
+    <div class="header">
+        <h1>Weather App</h1>
+        <h2>Current Day, Month, Year</h2>
+        <h3>Current Time of Day</h3>
+    </div>
+
+    <div class="city-selector">
+        <p>List to select city</p>
+    </div>
+    
+
+    <div class="weather-container">
+        <h3>City Name</h3>
+        <p>current temp</p>
+        <p>Weather ex: sunny</p>
+        <p>High, Low temp for current day</p>
+
+        <div class="alerts">
+            <p>Displays alerts for current and future weather conditions.</p>
+        </div>
+
+        <div class="hourly-forecast">
+            <p>Forecast for next few hrs. Will contain hour, weather type represented by icon, and temp. (if available)</p>
+        </div>
+
+        <div class="weekly-forecast">
+            <p>Forecast for next few days. Will contain day, weather type represented by icon, and low and high temp. (if available)</p>
+        </div>
+    </div>
     <br>See the <a href="README.md">README</a> for project details
 </body>
 </html>

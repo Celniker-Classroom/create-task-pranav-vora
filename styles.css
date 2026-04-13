@@ -1,1 +1,42 @@
-/* Add Global styles here */
+.header{
+    text-align: center;
+    border-style: solid;
+    border-width: 0px;
+    border-bottom-width: 10px;
+}
+.city-selector{
+    text-align: center;
+    font-size: 40px;
+}
+.weather-container{
+    text-align: center;
+    border-style: solid;
+    margin: 0 auto;
+    width: 50%;
+    border-radius: 15px;
+    border-width: 5px;
+}
+.hourly-forecast{
+    text-align: center;
+    border-style: solid;
+    margin: 0 auto;
+    width: 50%;
+    border-radius: 15px;
+    border-width: 2px;  
+}
+.weekly-forecast{
+    text-align: center;
+    border-style: solid;
+    margin: 0 auto;
+    width: 50%;
+    border-radius: 15px;
+    border-width: 2px;  
+}
+.alerts{
+    text-align: center;
+    border-style: solid;
+    margin: 0 auto;
+    width: 50%;
+    border-radius: 15px;
+    border-width: 2px;  
+}
