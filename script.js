@@ -10,7 +10,7 @@ function updateTime(){
 }
 
 const lat = 32.7157;
-const lon = 117.1638; 
+const lon = -117.1638; 
 const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m`;
 
 
@@ -37,7 +37,7 @@ async function getCurrentWeather() {
 
 
 let cityName = "San Diego";
-let currentTemp = await getCurrentWeather();
+let currentTemp = getCurrentWeather();
 let weather = "Sunny";
 let high = "77";
 let low = "57";
@@ -46,11 +46,18 @@ displayWeather(cityName, currentTemp, weather, high, low, alerts);
 
 
 function displayWeather(cityName, currentTemp, weather, high, low, alerts){
-    document.getElementById("city-name").textContent = cityName;
-    document.getElementById("current-temp").textContent = currentTemp;
-    document.getElementById("weather").textContent = weather;
-    document.getElementById("high-low").textContent = "High: "+ high + " | Low: " + low;
-    document.getElementById("alerts").textContent = alerts;
+  let background = document.getElementById("weather-container");
+  let weather = document.getElementById("weather");
+  document.getElementById("city-name").textContent = cityName;
+  document.getElementById("current-temp").textContent = currentTemp;
+  weather.textContent = weather;
+  document.getElementById("high-low").textContent = "High: "+ high + " | Low: " + low;
+  document.getElementById("alerts").textContent = alerts;
+
+
+  if (weather == "Sunny"){
+    background.style.backgroundImage = "radial-gradient(circle at top left, #f9d71c 1%, #87CEEB 30%)";
+  }
 }
 
 setInterval(updateTime, 1000);
