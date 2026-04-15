@@ -26,31 +26,34 @@ async function getCurrentWeather() {
     const currentTemp = data.current.temperature_2m;
     const unit = data.current_units.temperature_2m;
     console.log(`Current temperature: ${currentTemp}${unit}`);
-    return currentTemp;
+    return ((Number(currentTemp) * (9/5)) + 32).toFixed(0);
   } catch (error) {
     console.error("Fetch error:", error);
   }
 }
 
+async function init() {
+  let cityName = "San Diego";
+  let currentTemp = await getCurrentWeather(); // wait for real value
+  let weather = "Sunny";
+  let high = "77";
+  let low = "57";
+  let alerts = "No weather alerts are present.";
+
+  displayWeather(cityName, currentTemp, weather, high, low, alerts);
+}
+
+init();
 
 
-
-
-let cityName = "San Diego";
-let currentTemp = getCurrentWeather();
-let weather = "Sunny";
-let high = "77";
-let low = "57";
-let alerts = "No weather alerts are present.";
-displayWeather(cityName, currentTemp, weather, high, low, alerts);
 
 
 function displayWeather(cityName, currentTemp, weather, high, low, alerts){
   let background = document.getElementById("weather-container");
-  let weather = document.getElementById("weather");
+  let weatherText = document.getElementById("weather");
   document.getElementById("city-name").textContent = cityName;
   document.getElementById("current-temp").textContent = currentTemp;
-  weather.textContent = weather;
+  weatherText.textContent = weather;
   document.getElementById("high-low").textContent = "High: "+ high + " | Low: " + low;
   document.getElementById("alerts").textContent = alerts;
 
