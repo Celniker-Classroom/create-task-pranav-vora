@@ -8,10 +8,65 @@ function updateTime(){
     document.getElementById("date").textContent  = currentMonth + "/" + currentDate + "/" + currentYear;
     document.getElementById("time").textContent  = currentTime;
 }
+let lat = 32.7157;
+let lon = -117.1638;
+document.getElementById("button").addEventListener("click", function(){
+  let userInput =  document.getElementById("city-input").value;
+  const coordinates = getCityCoordinates(userInput);
+  lat = coordinates[0];
+  lon = coordinates[1]; 
+  init(userInput);
+});
 
-const lat = 32.7157;
-const lon = -117.1638; 
-const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min`;
+const cityCoords = {
+  "Los Angeles": [34.0522, -118.2437],
+  "Chicago": [41.8781, -87.6298],
+  "Houston": [29.7604, -95.3698],
+  "Phoenix": [33.4484, -112.0740],
+  "Philadelphia": [39.9526, -75.1652],
+  "San Antonio": [29.4241, -98.4936],
+  "San Diego": [32.7157, -117.1638],
+  "Dallas": [32.7767, -96.7970],
+  "Jacksonville": [30.3322, -81.6557],
+  "Fort Worth": [32.7555, -97.3308],
+  "San Jose": [37.3382, -121.8863],
+  "Austin": [30.2672, -97.7431],
+  "Charlotte": [35.2271, -80.8431],
+  "Columbus": [39.9612, -82.9988],
+  "New York": [40.7128, -74.0060],
+  "London": [51.5074, -0.1278],
+  "Tokyo": [35.6895, 139.6917],
+  "Delhi": [28.6139, 77.2090],
+  "Shanghai": [31.2304, 121.4737],
+  "Dhaka": [23.8103, 90.4125],
+  "Sao Paulo": [-23.5505, -46.6333],
+  "Cairo": [30.0444, 31.2357],
+  "Mexico City": [19.4326, -99.1332],
+  "Beijing": [39.9042, 116.4074],
+  "Mumbai": [18.9750, 72.8258],
+  "Osaka": [34.6937, 135.5023],
+  "Kinshasa": [-4.4419, 15.2663],
+  "Chongqing": [29.5630, 106.5516],
+  "Karachi": [24.8607, 67.0011],
+  "Lagos": [6.5244, 3.3792],
+  "Istanbul": [41.0082, 28.9784],
+  "Kolkata": [22.5726, 88.3639],
+  "Buenos Aires": [-34.6037, -58.3816],
+  "Manila": [14.5995, 120.9842],
+  "Lahore": [31.5204, 74.3587],
+  "Guangzhou": [23.1291, 113.2644],
+  "Tianjin": [39.0842, 117.2009],
+  "Bangalore": [12.9716, 77.5946],
+  "Rio de Janeiro": [-22.9068, -43.1729],
+  "Shenzhen": [22.5431, 114.0579],
+  "Moscow": [55.7558, 37.6173]
+}; //this object was generated using AI overview
+
+
+function getCityCoordinates(userInput){
+
+  return cityCoords[userInput];
+} 
 
 
 
@@ -30,6 +85,7 @@ const weatherCodes = {
 
 
 async function getCurrentWeatherData() {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min`;
   try {
     const response = await fetch(url);
     if (!response.ok) {
@@ -47,16 +103,16 @@ async function getCurrentWeatherData() {
   }
 }
 
-async function init() {
+async function init(userInput) {
   const weatherData = await getCurrentWeatherData();
-  let cityName = "San Diego";
+  let cityName = userInput;
   let [currentTemp, weather, high, low] = weatherData;
   let alerts = "No weather alerts are present.";
 
   displayWeather(cityName, currentTemp, weather, high, low, alerts);
 }
 
-init();
+
 
 
 
