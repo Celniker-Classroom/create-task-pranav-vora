@@ -10,6 +10,7 @@ function updateTime(){
 }
 let lat = 32.7157;
 let lon = -117.1638;
+init("San Diego");
 document.getElementById("button").addEventListener("click", function(){
   let userInput =  document.getElementById("city-input").value;
   const coordinates = getCityCoordinates(userInput);
@@ -64,8 +65,15 @@ const cityCoords = {
 
 
 function getCityCoordinates(userInput){
-
-  return cityCoords[userInput];
+  let cities = Object.keys(cityCoords);
+  for (let i = 0; i < cities.length; i++){
+    if (cities[i].toLowerCase() == userInput.toLowerCase()){
+      document.getElementById("input-msg").textContent = "";
+      return cityCoords[cities[i]];
+    }
+  }
+  document.getElementById("input-msg").textContent = "Please enter a valid city!";
+  return null;
 } 
 
 
