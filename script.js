@@ -72,6 +72,8 @@ function getCityCoordinates(userInput){
       return cityCoords[cities[i]];
     }
   }
+  document.getElementById("input-msg").textContent = "Please enter a valid city and check your spelling!";
+  return null;
   
 } 
 
