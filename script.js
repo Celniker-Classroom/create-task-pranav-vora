@@ -1,4 +1,3 @@
-// add javascript here
 function updateTime(){
     let now = new Date();
     let currentMonth = now.getMonth() +1;
@@ -94,6 +93,10 @@ const weatherCodes = {
 
 
 async function getCurrentWeatherData() {
+  // API Name: OpenWeatherMap API
+  // Author: OpenWeather
+  // Source: https://openweathermap.org
+  // Date Retrieved: April 17, 2026
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min`;
   try {
     const response = await fetch(url);
@@ -101,7 +104,6 @@ async function getCurrentWeatherData() {
       throw new Error("Network response was not ok");
     }
     const data = await response.json();
-    // Access current temperature from the response object
     const currentTemp = ((Number(data.current.temperature_2m) * (9/5)) + 32).toFixed(0);
     const currentWeather = weatherCodes[data.current.weather_code];
     const highTemp = ((Number(data.daily.temperature_2m_max[0]) * (9/5)) + 32).toFixed(0);
