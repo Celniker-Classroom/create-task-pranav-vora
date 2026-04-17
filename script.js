@@ -72,8 +72,7 @@ function getCityCoordinates(userInput){
       return cityCoords[cities[i]];
     }
   }
-  document.getElementById("input-msg").textContent = "Please enter a valid city!";
-  return null;
+  
 } 
 
 
@@ -115,9 +114,8 @@ async function init(userInput) {
   const weatherData = await getCurrentWeatherData();
   let cityName = userInput;
   let [currentTemp, weather, high, low] = weatherData;
-  let alerts = "No weather alerts are present.";
 
-  displayWeather(cityName, currentTemp, weather, high, low, alerts);
+  displayWeather(cityName, currentTemp, weather, high, low);
 }
 
 
@@ -125,14 +123,13 @@ async function init(userInput) {
 
 
 
-function displayWeather(cityName, currentTemp, weather, high, low, alerts){
+function displayWeather(cityName, currentTemp, weather, high, low){
   let background = document.getElementById("weather-container");
   let weatherText = document.getElementById("weather");
   document.getElementById("city-name").textContent = cityName;
   document.getElementById("current-temp").textContent = currentTemp;
   weatherText.textContent = weather;
   document.getElementById("high-low").textContent = "High: "+ high + " | Low: " + low;
-  document.getElementById("alerts").textContent = alerts;
 
 
   if (weather == "Clear Skies" || weather == "Mainly Clear"){
