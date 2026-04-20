@@ -14,9 +14,10 @@ document.getElementById("button").addEventListener("click", function(){
   let userInput =  document.getElementById("city-input").value;
   const coordinates = getCityCoordinates(userInput);
   lat = coordinates[0];
-  lon = coordinates[1]; 
+  lon = coordinates[1];
   init(userInput);
 });
+
 
 const cityCoords = {
   "Los Angeles": [34.0522, -118.2437],
@@ -63,6 +64,8 @@ const cityCoords = {
 }; //this object was generated using AI overview
 
 
+
+
 function getCityCoordinates(userInput){
   let cities = Object.keys(cityCoords);
   for (let i = 0; i < cities.length; i++){
@@ -73,8 +76,11 @@ function getCityCoordinates(userInput){
   }
   document.getElementById("input-msg").textContent = "Please enter a valid city and check your spelling!";
   return null;
-  
-} 
+ 
+}
+
+
+
 
 
 
@@ -92,12 +98,14 @@ const weatherCodes = {
 }; //this object was generated using AI overview
 
 
+
+
 async function getCurrentWeatherData() {
   // API Name: OpenWeatherMap API
   // Author: OpenWeather
   // Source: https://openweathermap.org
   // Date Retrieved: April 17, 2026
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto`;
   try {
     const response = await fetch(url);
     if (!response.ok) {
@@ -114,12 +122,49 @@ async function getCurrentWeatherData() {
   }
 }
 
-async function init(userInput) {
-  const weatherData = await getCurrentWeatherData();
-  let cityName = userInput;
-  let [currentTemp, weather, high, low] = weatherData;
 
-  displayWeather(cityName, currentTemp, weather, high, low);
+async function getHourlyWeatherData(hour) {
+  // API Name: OpenWeatherMap API
+  // Author: OpenWeather
+  // Source: https://openweathermap.org
+  // Date Retrieved: April 17, 2026
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,weather_code&timezone=auto&forecast_days=1`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const targetIndex = hour;
+    const data = await response.json();
+    const Temp = ((Number(data.hourly.temperature_2m[targetIndex]) * (9/5)) + 32).toFixed(0);
+    const Weather = weatherCodes[data.hourly.weather_code[targetIndex]];
+    return [Temp, Weather];
+  } catch (error) {
+    console.error("Fetch error:", error);
+  }
+}
+
+
+async function getDailyWeatherData(day) {
+  // API Name: OpenWeatherMap API
+  // Author: OpenWeather
+  // Source: https://openweathermap.org
+  // Date Retrieved: April 17, 2026
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=7`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const targetIndex = day;
+    const data = await response.json();
+    const highTemp = ((Number(data.daily.temperature_2m_max[targetIndex]) * (9/5)) + 32).toFixed(0);
+    const lowTemp = ((Number(data.daily.temperature_2m_min[targetIndex]) * (9/5)) + 32).toFixed(0);
+    const Weather = weatherCodes[data.daily.weather_code[targetIndex]];
+    return [highTemp, lowTemp, Weather];
+  } catch (error) {
+    console.error("Fetch error:", error);
+  }
 }
 
 
@@ -127,13 +172,41 @@ async function init(userInput) {
 
 
 
-function displayWeather(cityName, currentTemp, weather, high, low){
+
+
+async function init(userInput) {
+  let hourlyData = [];
+  for(let i = 0; i<24; i+=3){
+    hourlyData.push(await getHourlyWeatherData(i));
+  }
+  const weatherData = await getCurrentWeatherData();
+  let cityName = userInput;
+  let [currentTemp, weather, high, low] = weatherData;
+
+
+  displayWeather(cityName, currentTemp, weather, high, low, hourlyData);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+function displayWeather(cityName, currentTemp, weather, high, low, hourlyData){
   let background = document.getElementById("weather-container");
   let weatherText = document.getElementById("weather");
   document.getElementById("city-name").textContent = cityName;
   document.getElementById("current-temp").textContent = currentTemp;
   weatherText.textContent = weather;
   document.getElementById("high-low").textContent = "High: "+ high + " | Low: " + low;
+
+
 
 
   if (weather == "Clear Skies" || weather == "Mainly Clear"){
@@ -153,5 +226,10 @@ function displayWeather(cityName, currentTemp, weather, high, low){
   }
 }
 
+
 setInterval(updateTime, 1000);
+
+
+
+
 
