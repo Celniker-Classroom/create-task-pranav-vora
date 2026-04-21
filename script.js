@@ -179,12 +179,17 @@ async function init(userInput) {
   for(let i = 0; i<24; i+=3){
     hourlyData.push(await getHourlyWeatherData(i));
   }
-  const weatherData = await getCurrentWeatherData();
+
+  let dailyData = [];
+  for(let i = 0; i<7; i++){
+      dailyData.push(await getDailyWeatherData(i));
+  }
+  let weatherData = await getCurrentWeatherData();
   let cityName = userInput;
   let [currentTemp, weather, high, low] = weatherData;
 
 
-  displayWeather(cityName, currentTemp, weather, high, low, hourlyData);
+  displayWeather(cityName, currentTemp, weather, high, low, hourlyData, dailyData);
 }
 
 
@@ -198,7 +203,7 @@ async function init(userInput) {
 
 
 
-function displayWeather(cityName, currentTemp, weather, high, low, hourlyData){
+function displayWeather(cityName, currentTemp, weather, high, low, hourlyData, dailyData){
   let background = document.getElementById("weather-container");
   let weatherText = document.getElementById("weather");
   document.getElementById("city-name").textContent = cityName;
@@ -224,6 +229,45 @@ function displayWeather(cityName, currentTemp, weather, high, low, hourlyData){
   }else{
     background.style.backgroundImage = "radial-gradient(circle at top left, #f9d71c 1%, #87CEEB 30%)";
   }
+
+  //code for hourly data
+  let hourContainer=document.getElementById('hour');
+  let containerForHours=document.getElementById('hourly-forecast');
+  containerForHours.innerHTML = "";
+  for(let i =0; i<hourlyData.length;i++){
+    let hourIncrement = (24/hourlyData.length);
+    let hour = hourIncrement * i;
+    let clone = hourContainer.cloneNode(true);
+    // Determine AM or PM
+    let ampm = hour >= 12 ? 'PM' : 'AM';
+
+    hour = hour % 12;
+
+    if (hour === 0) {
+      hour = 12;
+    }
+
+
+    clone.removeAttribute('hidden');
+    clone.textContent=hour + ampm + " | " + hourlyData[i][0] + " | " + hourlyData[i][1]; 
+    clone.id = 'hour-' + i;
+    containerForHours.appendChild(clone);
+  }
+
+  let dailyContainer=document.getElementById('day');
+  let containerForDays=document.getElementById('weekly-forecast');
+  containerForDays.innerHTML = "";
+  for(let i =0; i<dailyData.length;i++){
+    let clone = dailyContainer.cloneNode(true);
+    clone.removeAttribute('hidden');
+    clone.textContent=dailyData[i][0] + " | " + dailyData[i][1]; 
+    clone.id = 'day-' + i;
+    containerForDays.appendChild(clone);
+  }
+
+
+
+  
 }
 
 

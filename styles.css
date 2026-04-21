@@ -16,27 +16,48 @@
     border-radius: 15px;
     border-width: 5px;
 }
-/* .hourly-forecast{
+.hourly-forecast{
+    display: grid;
     text-align: center;
     border-style: solid;
+    grid-auto-flow: column;
     margin: 0 auto;
-    width: 50%;
+    width: 90%;
+    padding: 10px;
     border-radius: 15px;
     border-width: 2px;  
+}
+.hour-box{
+    text-align: center;
+    border-style: solid;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    border-width: 2px;    
 }
 .weekly-forecast{
     text-align: center;
     border-style: solid;
     margin: 0 auto;
-    width: 50%;
+    width: 90%;
     border-radius: 15px;
     border-width: 2px;  
 }
-.alerts{
+
+.day-box{
+    text-align: center;
+    border-style: solid;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    border-width: 2px;    
+}
+
+/* .alerts{
     text-align: center;
     border-style: solid;
     margin: 0 auto;
     width: 50%;
     border-radius: 15px;
     border-width: 2px;  
-} */
+} */ */
