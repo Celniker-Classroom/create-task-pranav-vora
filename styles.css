@@ -16,6 +16,18 @@
     border-radius: 15px;
     border-width: 5px;
 }
+#city-name{
+    font-size: 25px;    
+}
+#current-temp{
+   font-size: 50px; 
+}
+#weather{
+    font-size: 25px;    
+}
+#high-low{
+    font-size: 25px;    
+}
 .hourly-forecast{
     display: grid;
     text-align: center;
@@ -26,6 +38,7 @@
     padding: 10px;
     border-radius: 15px;
     border-width: 2px;  
+    white-space: pre-line;
 }
 .hour-box{
     text-align: center;
@@ -36,12 +49,16 @@
     border-width: 2px;    
 }
 .weekly-forecast{
+    display: grid;
     text-align: center;
     border-style: solid;
+    grid-auto-flow: column;
     margin: 0 auto;
     width: 90%;
+    padding: 10px;
     border-radius: 15px;
     border-width: 2px;  
+    white-space: pre-line;
 }
 
 .day-box{
@@ -52,6 +69,8 @@
     border-radius: 15px;
     border-width: 2px;    
 }
+
+
 
 /* .alerts{
     text-align: center;

@@ -116,7 +116,7 @@ async function getCurrentWeatherData() {
     const currentWeather = weatherCodes[data.current.weather_code];
     const highTemp = ((Number(data.daily.temperature_2m_max[0]) * (9/5)) + 32).toFixed(0);
     const lowTemp = ((Number(data.daily.temperature_2m_min[0]) * (9/5)) + 32).toFixed(0);
-    return [currentTemp, currentWeather, highTemp, lowTemp];
+    return [currentTemp + "\u00B0F", currentWeather, highTemp + "\u00B0F", lowTemp + "\u00B0F"]; // + "\u00B0F" is the symbol for degree Fahrenheit
   } catch (error) {
     console.error("Fetch error:", error);
   }
@@ -138,7 +138,7 @@ async function getHourlyWeatherData(hour) {
     const data = await response.json();
     const Temp = ((Number(data.hourly.temperature_2m[targetIndex]) * (9/5)) + 32).toFixed(0);
     const Weather = weatherCodes[data.hourly.weather_code[targetIndex]];
-    return [Temp, Weather];
+    return [Temp + "\u00B0F", Weather]; // + "\u00B0F" is symbol for degree fahrenheit
   } catch (error) {
     console.error("Fetch error:", error);
   }
@@ -151,6 +151,10 @@ async function getDailyWeatherData(day) {
   // Source: https://openweathermap.org
   // Date Retrieved: April 17, 2026
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=7`;
+
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const UtcDay = days[(new Date().getUTCDay()+day) % 7];
+
   try {
     const response = await fetch(url);
     if (!response.ok) {
@@ -161,7 +165,7 @@ async function getDailyWeatherData(day) {
     const highTemp = ((Number(data.daily.temperature_2m_max[targetIndex]) * (9/5)) + 32).toFixed(0);
     const lowTemp = ((Number(data.daily.temperature_2m_min[targetIndex]) * (9/5)) + 32).toFixed(0);
     const Weather = weatherCodes[data.daily.weather_code[targetIndex]];
-    return [highTemp, lowTemp, Weather];
+    return [highTemp + "\u00B0F", lowTemp + "\u00B0F", Weather, UtcDay]; // + "\u00B0F" is symbol for degree fahrenheit
   } catch (error) {
     console.error("Fetch error:", error);
   }
@@ -249,18 +253,20 @@ function displayWeather(cityName, currentTemp, weather, high, low, hourlyData, d
 
 
     clone.removeAttribute('hidden');
-    clone.textContent=hour + ampm + " | " + hourlyData[i][0] + " | " + hourlyData[i][1]; 
+    clone.textContent=hour + ampm + " | " + hourlyData[i][0] + "\n" + hourlyData[i][1]; 
     clone.id = 'hour-' + i;
     containerForHours.appendChild(clone);
   }
 
+
+    //code for daily data
   let dailyContainer=document.getElementById('day');
   let containerForDays=document.getElementById('weekly-forecast');
   containerForDays.innerHTML = "";
   for(let i =0; i<dailyData.length;i++){
     let clone = dailyContainer.cloneNode(true);
     clone.removeAttribute('hidden');
-    clone.textContent=dailyData[i][0] + " | " + dailyData[i][1]; 
+    clone.textContent=dailyData[i][3] + "\n" + dailyData[i][0] + " | " + dailyData[i][1] + "\n" + dailyData[i][2]; 
     clone.id = 'day-' + i;
     containerForDays.appendChild(clone);
   }
