@@ -10,11 +10,19 @@ function updateTime(){
 let lat = 32.7157;
 let lon = -117.1638;
 init("San Diego");
+let userInput = "San Diego";
 document.getElementById("button").addEventListener("click", function(){
-  let userInput =  document.getElementById("city-input").value;
+  userInput =  document.getElementById("city-input").value;
   const coordinates = getCityCoordinates(userInput);
   lat = coordinates[0];
   lon = coordinates[1];
+  init(userInput);
+});
+//ensures that the display changes if the radio buttons change
+document.getElementById("Fahrenheit").addEventListener("change", function(){
+  init(userInput);
+});
+document.getElementById("Celsius").addEventListener("change", function(){
   init(userInput);
 });
 
@@ -60,7 +68,15 @@ const cityCoords = {
   "Bangalore": [12.9716, 77.5946],
   "Rio de Janeiro": [-22.9068, -43.1729],
   "Shenzhen": [22.5431, 114.0579],
-  "Moscow": [55.7558, 37.6173]
+  "Moscow": [55.7558, 37.6173],
+  "Indianapolis" : [39.7684, -86.1581],
+  "San Francisco" : [37.7749, -122.4194],
+  "Seattle" : [47.6062, -122.3321],
+  "Denver" : [39.7392, -104.9903],
+  "Boston" : [42.3601, -71.0589],
+  "Paris" : [48.8566, 2.3522],
+  "Seoul" : [37.5665, 126.9780]
+
 }; //this object was generated using AI overview
 
 
@@ -112,11 +128,19 @@ async function getCurrentWeatherData() {
       throw new Error("Network response was not ok");
     }
     const data = await response.json();
-    const currentTemp = ((Number(data.current.temperature_2m) * (9/5)) + 32).toFixed(0);
-    const currentWeather = weatherCodes[data.current.weather_code];
-    const highTemp = ((Number(data.daily.temperature_2m_max[0]) * (9/5)) + 32).toFixed(0);
-    const lowTemp = ((Number(data.daily.temperature_2m_min[0]) * (9/5)) + 32).toFixed(0);
-    return [currentTemp + "\u00B0F", currentWeather, highTemp + "\u00B0F", lowTemp + "\u00B0F"]; // + "\u00B0F" is the symbol for degree Fahrenheit
+    let currentTemp = Number(data.current.temperature_2m).toFixed(0);
+    let currentWeather = weatherCodes[data.current.weather_code];
+    let highTemp = Number(data.daily.temperature_2m_max[0]).toFixed(0);
+    let lowTemp = Number(data.daily.temperature_2m_min[0]).toFixed(0);
+    let fahrenheitCelsius = "\u00B0C";
+    
+    if(document.getElementById("Fahrenheit").checked){
+      currentTemp = ((Number(data.current.temperature_2m) * (9/5)) + 32).toFixed(0);
+      highTemp = ((Number(data.daily.temperature_2m_max[0]) * (9/5)) + 32).toFixed(0);
+      lowTemp = ((Number(data.daily.temperature_2m_min[0]) * (9/5)) + 32).toFixed(0);
+      fahrenheitCelsius = "\u00B0F";
+    }
+    return [currentTemp + fahrenheitCelsius, currentWeather, highTemp + fahrenheitCelsius, lowTemp + fahrenheitCelsius]; // + "\u00B0F" is the symbol for degree Fahrenheit
   } catch (error) {
     console.error("Fetch error:", error);
   }
@@ -136,9 +160,14 @@ async function getHourlyWeatherData(hour) {
     }
     const targetIndex = hour;
     const data = await response.json();
-    const Temp = ((Number(data.hourly.temperature_2m[targetIndex]) * (9/5)) + 32).toFixed(0);
+    let Temp = Number(data.hourly.temperature_2m[targetIndex]).toFixed(0);
+    let fahrenheitCelsius = "\u00B0C";
+    if(document.getElementById("Fahrenheit").checked){
+      Temp = ((Number(data.hourly.temperature_2m[targetIndex]) * (9/5)) + 32).toFixed(0);
+      fahrenheitCelsius = "\u00B0F";
+    }
     const Weather = weatherCodes[data.hourly.weather_code[targetIndex]];
-    return [Temp + "\u00B0F", Weather]; // + "\u00B0F" is symbol for degree fahrenheit
+    return [Temp + fahrenheitCelsius, Weather]; // + "\u00B0F" is symbol for degree fahrenheit
   } catch (error) {
     console.error("Fetch error:", error);
   }
@@ -162,10 +191,16 @@ async function getDailyWeatherData(day) {
     }
     const targetIndex = day;
     const data = await response.json();
-    const highTemp = ((Number(data.daily.temperature_2m_max[targetIndex]) * (9/5)) + 32).toFixed(0);
-    const lowTemp = ((Number(data.daily.temperature_2m_min[targetIndex]) * (9/5)) + 32).toFixed(0);
+    let highTemp = Number(data.daily.temperature_2m_max[targetIndex]).toFixed(0);
+    let lowTemp = Number(data.daily.temperature_2m_min[targetIndex]).toFixed(0);
+    let fahrenheitCelsius = "\u00B0C";
+    if(document.getElementById("Fahrenheit").checked){
+      highTemp = ((Number(data.daily.temperature_2m_max[targetIndex]) * (9/5)) + 32).toFixed(0);
+      lowTemp = ((Number(data.daily.temperature_2m_min[targetIndex]) * (9/5)) + 32).toFixed(0);
+      fahrenheitCelsius = "\u00B0F";
+    }
     const Weather = weatherCodes[data.daily.weather_code[targetIndex]];
-    return [highTemp + "\u00B0F", lowTemp + "\u00B0F", Weather, UtcDay]; // + "\u00B0F" is symbol for degree fahrenheit
+    return [highTemp + fahrenheitCelsius, lowTemp + fahrenheitCelsius, Weather, UtcDay]; // + "\u00B0F" is symbol for degree fahrenheit
   } catch (error) {
     console.error("Fetch error:", error);
   }

@@ -1,12 +1,32 @@
+body{
+    background-color: #E3F4FE;
+}
 .header{
     text-align: center;
     border-style: solid;
     border-width: 0px;
     border-bottom-width: 10px;
 }
+h1{
+    font-size: 100px;
+    margin: 5px;
+}
+#date{
+    font-size: 50px;
+    margin: 5px;
+}
+#time{
+    font-size: 50px;
+    margin: 5px;
+}
 .city-selector{
     text-align: center;
-    font-size: 20px;
+    font-size: 30px;
+    margin: 10px;
+}
+#city-input{
+    width: 25%;
+    background-color: #E3F4FE;
 }
 .weather-container{
     text-align: center;
@@ -17,10 +37,14 @@
     border-width: 5px;
 }
 #city-name{
-    font-size: 25px;    
+    font-size: 100px;
+    margin: 0px;   
+    font-weight: 1; 
 }
 #current-temp{
    font-size: 50px; 
+   font-weight: 1;
+   margin: 0px; 
 }
 #weather{
     font-size: 25px;    
