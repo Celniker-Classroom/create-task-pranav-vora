@@ -52,6 +52,15 @@ h1{
 #high-low{
     font-size: 25px;    
 }
+#precip-chance{
+    font-size: 15px;    
+}
+#humidity{
+    font-size: 15px;    
+}
+#wind-speed{
+    font-size: 15px;    
+}
 .hourly-forecast{
     display: grid;
     text-align: center;

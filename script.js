@@ -11,6 +11,7 @@ let lat = 32.7157;
 let lon = -117.1638;
 init("San Diego");
 let userInput = "San Diego";
+let cityName = "San Diego";
 document.getElementById("button").addEventListener("click", function(){
   userInput =  document.getElementById("city-input").value;
   const coordinates = getCityCoordinates(userInput);
@@ -20,10 +21,10 @@ document.getElementById("button").addEventListener("click", function(){
 });
 //ensures that the display changes if the radio buttons change
 document.getElementById("Fahrenheit").addEventListener("change", function(){
-  init(userInput);
+  init(cityName);
 });
 document.getElementById("Celsius").addEventListener("change", function(){
-  init(userInput);
+  init(cityName);
 });
 
 
@@ -121,7 +122,7 @@ async function getCurrentWeatherData() {
   // Author: OpenWeather
   // Source: https://openweathermap.org
   // Date Retrieved: April 17, 2026
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
   try {
     const response = await fetch(url);
     if (!response.ok) {
@@ -140,7 +141,10 @@ async function getCurrentWeatherData() {
       lowTemp = ((Number(data.daily.temperature_2m_min[0]) * (9/5)) + 32).toFixed(0);
       fahrenheitCelsius = "\u00B0F";
     }
-    return [currentTemp + fahrenheitCelsius, currentWeather, highTemp + fahrenheitCelsius, lowTemp + fahrenheitCelsius]; // + "\u00B0F" is the symbol for degree Fahrenheit
+    let currentHumidity = data.current.relative_humidity_2m + "%";
+    let currentWindSpeed = data.current.wind_speed_10m + " km/h";
+    let precipChance = data.daily.precipitation_probability_max[0] + "%";
+    return [currentTemp + fahrenheitCelsius, currentWeather, highTemp + fahrenheitCelsius, lowTemp + fahrenheitCelsius, currentHumidity, currentWindSpeed, precipChance]; // + "\u00B0F" is the symbol for degree Fahrenheit
   } catch (error) {
     console.error("Fetch error:", error);
   }
@@ -223,12 +227,11 @@ async function init(userInput) {
   for(let i = 0; i<7; i++){
       dailyData.push(await getDailyWeatherData(i));
   }
-  let weatherData = await getCurrentWeatherData();
-  let cityName = userInput;
-  let [currentTemp, weather, high, low] = weatherData;
+  let currentWeatherData = await getCurrentWeatherData();
+  cityName = userInput;
 
 
-  displayWeather(cityName, currentTemp, weather, high, low, hourlyData, dailyData);
+  displayWeather(cityName, currentWeatherData, hourlyData, dailyData);
 }
 
 
@@ -242,13 +245,17 @@ async function init(userInput) {
 
 
 
-function displayWeather(cityName, currentTemp, weather, high, low, hourlyData, dailyData){
+function displayWeather(cityName, currentWeatherData, hourlyData, dailyData){
+  let [currentTemp, weather, high, low, currentHumidity, currentWindspeed, precipChance] = currentWeatherData;
   let background = document.getElementById("weather-container");
   let weatherText = document.getElementById("weather");
   document.getElementById("city-name").textContent = cityName;
   document.getElementById("current-temp").textContent = currentTemp;
   weatherText.textContent = weather;
   document.getElementById("high-low").textContent = "High: "+ high + " | Low: " + low;
+  document.getElementById("precip-chance").textContent = "Precipitation: "+ precipChance;
+  document.getElementById("humidity").textContent = "Humidity: "+ currentHumidity;
+  document.getElementById("wind-speed").textContent = "Wind Speed: "+ currentWindspeed;
 
 
 
