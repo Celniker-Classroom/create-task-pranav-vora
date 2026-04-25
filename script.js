@@ -1,3 +1,4 @@
+// API Used: OpenMateo API link: https://open-meteo.com/en/docs
 function updateTime(){
     let now = new Date();
     let currentMonth = now.getMonth() +1;
@@ -7,11 +8,15 @@ function updateTime(){
     document.getElementById("date").textContent  = currentMonth + "/" + currentDate + "/" + currentYear;
     document.getElementById("time").textContent  = currentTime;
 }
+
+//San Diego coordinates
 let lat = 32.7157;
 let lon = -117.1638;
 init("San Diego");
 let userInput = "San Diego";
 let cityName = "San Diego";
+
+
 document.getElementById("button").addEventListener("click", function(){
   userInput =  document.getElementById("city-input").value;
   const coordinates = getCityCoordinates(userInput);
@@ -100,7 +105,7 @@ function getCityCoordinates(userInput){
 
 
 
-
+//weather type corresponding to each value
 const weatherCodes = {
     0: "Clear Skies",
     1: "Mainly Clear", 2: "Partly Cloudy", 3: "Overcast",
@@ -118,9 +123,9 @@ const weatherCodes = {
 
 
 async function getCurrentWeatherData() {
-  // API Name: OpenWeatherMap API
-  // Author: OpenWeather
-  // Source: https://openweathermap.org
+  // API Name: OpenMateo API
+  // Author: OpenMateo
+  // Source: https://open-meteo.com/
   // Date Retrieved: April 17, 2026
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m,is_day&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
   try {
@@ -134,7 +139,7 @@ async function getCurrentWeatherData() {
     let currentWeather = weatherCodes[data.current.weather_code];
     let highTemp = Number(data.daily.temperature_2m_max[0]).toFixed(0);
     let lowTemp = Number(data.daily.temperature_2m_min[0]).toFixed(0);
-    let fahrenheitCelsius = "\u00B0C";
+    let fahrenheitCelsius = "\u00B0C"; //symbol for degree fahrenheit or celsius
     
     if(document.getElementById("Fahrenheit").checked){
       currentTemp = ((Number(data.current.temperature_2m) * (9/5)) + 32).toFixed(0);
@@ -153,9 +158,9 @@ async function getCurrentWeatherData() {
 
 
 async function getHourlyWeatherData(hour) {
-  // API Name: OpenWeatherMap API
-  // Author: OpenWeather
-  // Source: https://openweathermap.org
+  // API Name: OpenMateo API
+  // Author: OpenMateo
+  // Source: https://open-meteo.com/
   // Date Retrieved: April 17, 2026
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,weather_code&timezone=auto&forecast_days=1`;
   try {
@@ -180,9 +185,9 @@ async function getHourlyWeatherData(hour) {
 
 
 async function getDailyWeatherData(day) {
-  // API Name: OpenWeatherMap API
-  // Author: OpenWeather
-  // Source: https://openweathermap.org
+  // API Name: OpenMateo API
+  // Author: OpenMateo
+  // Source: https://open-meteo.com/
   // Date Retrieved: April 17, 2026
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=7`;
 
@@ -217,14 +222,16 @@ async function getDailyWeatherData(day) {
 
 
 
-
+//gets and displays appropriate weather data based on user's input on the city
 async function init(userInput) {
   let hourlyData = [];
+  //gets hourly data every 3 hours in the 24 hr day
   for(let i = 0; i<24; i+=3){
     hourlyData.push(await getHourlyWeatherData(i));
   }
 
   let dailyData = [];
+  //gets daily data every day in a week
   for(let i = 0; i<7; i++){
       dailyData.push(await getDailyWeatherData(i));
   }
@@ -249,10 +256,10 @@ async function init(userInput) {
 function displayWeather(cityName, currentWeatherData, hourlyData, dailyData){
   let [currentTemp, weather, high, low, currentHumidity, currentWindspeed, precipChance, isDay] = currentWeatherData;
   let background = document.getElementById("weather-container");
-  let weatherText = document.getElementById("weather");
+  //displays current data
   document.getElementById("city-name").textContent = cityName;
   document.getElementById("current-temp").textContent = currentTemp;
-  weatherText.textContent = weather;
+  document.getElementById("weather").textContent = weather;
   document.getElementById("high-low").textContent = "High: "+ high + " | Low: " + low;
   document.getElementById("precip-chance").textContent = "Precipitation: "+ precipChance;
   document.getElementById("humidity").textContent = "Humidity: "+ currentHumidity;
@@ -291,28 +298,28 @@ function displayWeather(cityName, currentWeatherData, hourlyData, dailyData){
     let clone = hourContainer.cloneNode(true);
     // Determine AM or PM
     let ampm = hour >= 12 ? 'PM' : 'AM';
-
     hour = hour % 12;
-
     if (hour === 0) {
       hour = 12;
     }
 
 
     clone.removeAttribute('hidden');
+    //hourlyData[i][0] = temp, hourlyData[i][1] = weather
     clone.textContent=hour + ampm + " | " + hourlyData[i][0] + "\n" + hourlyData[i][1]; 
     clone.id = 'hour-' + i;
     containerForHours.appendChild(clone);
   }
 
 
-    //code for daily data
+  //code for daily data
   let dailyContainer=document.getElementById('day');
   let containerForDays=document.getElementById('weekly-forecast');
   containerForDays.innerHTML = "";
   for(let i =0; i<dailyData.length;i++){
     let clone = dailyContainer.cloneNode(true);
     clone.removeAttribute('hidden');
+    //dailyData[i][0] = high, dailyData[i][1] = low, dailyData[i][2] = weather, dailyData[i][3] = day  
     clone.textContent=dailyData[i][3] + "\n" + dailyData[i][0] + " | " + dailyData[i][1] + "\n" + dailyData[i][2]; 
     clone.id = 'day-' + i;
     containerForDays.appendChild(clone);
@@ -323,7 +330,7 @@ function displayWeather(cityName, currentWeatherData, hourlyData, dailyData){
   
 }
 
-
+//updates time every second
 setInterval(updateTime, 1000);
 
 
