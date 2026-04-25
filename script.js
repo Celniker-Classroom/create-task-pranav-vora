@@ -122,13 +122,14 @@ async function getCurrentWeatherData() {
   // Author: OpenWeather
   // Source: https://openweathermap.org
   // Date Retrieved: April 17, 2026
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m,is_day&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
   try {
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
     const data = await response.json();
+    let isDay = data.current.is_day;
     let currentTemp = Number(data.current.temperature_2m).toFixed(0);
     let currentWeather = weatherCodes[data.current.weather_code];
     let highTemp = Number(data.daily.temperature_2m_max[0]).toFixed(0);
@@ -144,7 +145,7 @@ async function getCurrentWeatherData() {
     let currentHumidity = data.current.relative_humidity_2m + "%";
     let currentWindSpeed = data.current.wind_speed_10m + " km/h";
     let precipChance = data.daily.precipitation_probability_max[0] + "%";
-    return [currentTemp + fahrenheitCelsius, currentWeather, highTemp + fahrenheitCelsius, lowTemp + fahrenheitCelsius, currentHumidity, currentWindSpeed, precipChance]; // + "\u00B0F" is the symbol for degree Fahrenheit
+    return [currentTemp + fahrenheitCelsius, currentWeather, highTemp + fahrenheitCelsius, lowTemp + fahrenheitCelsius, currentHumidity, currentWindSpeed, precipChance, isDay]; // + "\u00B0F" is the symbol for degree Fahrenheit
   } catch (error) {
     console.error("Fetch error:", error);
   }
@@ -246,7 +247,7 @@ async function init(userInput) {
 
 
 function displayWeather(cityName, currentWeatherData, hourlyData, dailyData){
-  let [currentTemp, weather, high, low, currentHumidity, currentWindspeed, precipChance] = currentWeatherData;
+  let [currentTemp, weather, high, low, currentHumidity, currentWindspeed, precipChance, isDay] = currentWeatherData;
   let background = document.getElementById("weather-container");
   let weatherText = document.getElementById("weather");
   document.getElementById("city-name").textContent = cityName;
@@ -256,11 +257,15 @@ function displayWeather(cityName, currentWeatherData, hourlyData, dailyData){
   document.getElementById("precip-chance").textContent = "Precipitation: "+ precipChance;
   document.getElementById("humidity").textContent = "Humidity: "+ currentHumidity;
   document.getElementById("wind-speed").textContent = "Wind Speed: "+ currentWindspeed;
+  
+  
+  document.body.style.backgroundColor = "#E3F4FE";
 
-
-
-
-  if (weather == "Clear Skies" || weather == "Mainly Clear"){
+  //changes background based on weather type
+  if (isDay == 0){ //checks if it is night time
+    background.style.backgroundImage = "linear-gradient(#061D45 1%, #33085E 30%)";
+    document.body.style.backgroundColor = "#6a6a6a";
+  }else if (weather == "Clear Skies" || weather == "Mainly Clear"){
     background.style.backgroundImage = "radial-gradient(circle at top left, #f9d71c 1%, #87CEEB 30%)";
   }else if (weather == "Partly Cloudy" || weather == "Overcast" ||weather == "Fog" ||weather == "Depositing Rime Fog"){
     background.style.backgroundImage = "linear-gradient(#ffffff 1%, #DCD9E6 30%)";
