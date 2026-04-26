@@ -1,4 +1,5 @@
 // API Used: OpenMateo API link: https://open-meteo.com/en/docs
+//updates date and time on top of the website
 function updateTime(){
     let now = new Date();
     let currentMonth = now.getMonth() +1;
@@ -16,7 +17,7 @@ init("San Diego");
 let userInput = "San Diego";
 let cityName = "San Diego";
 
-
+//when enter button is clicked, get coordinates of the city and get and display data
 document.getElementById("button").addEventListener("click", function(){
   userInput =  document.getElementById("city-input").value;
   const coordinates = getCityCoordinates(userInput);
@@ -87,7 +88,7 @@ const cityCoords = {
 
 
 
-
+//gets the coordinates of the corresponding city the user enters (if in the list)
 function getCityCoordinates(userInput){
   let cities = Object.keys(cityCoords);
   for (let i = 0; i < cities.length; i++){
@@ -96,7 +97,7 @@ function getCityCoordinates(userInput){
       return cityCoords[cities[i]];
     }
   }
-  document.getElementById("input-msg").textContent = "Please enter a valid city and check your spelling!";
+  document.getElementById("input-msg").textContent = "Please enter a valid major city and check your spelling!";
   return null;
  
 }
@@ -121,16 +122,16 @@ const weatherCodes = {
 
 
 
-
+//gets weather data in this moment
 async function getCurrentWeatherData() {
   // API Name: OpenMateo API
   // Author: OpenMateo
   // Source: https://open-meteo.com/
   // Date Retrieved: April 17, 2026
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m,is_day&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
-  try {
+  try { //ensures if an error occurs within the try block, it catches the error below
     const response = await fetch(url);
-    if (!response.ok) {
+    if (!response.ok) { //if it cannot fetch data from the url, the code throws an error
       throw new Error("Network response was not ok");
     }
     const data = await response.json();
@@ -156,7 +157,7 @@ async function getCurrentWeatherData() {
   }
 }
 
-
+// same idea as previous function but it gets the data cooresponding to a specific hour in the current day, returns only weather type and temp
 async function getHourlyWeatherData(hour) {
   // API Name: OpenMateo API
   // Author: OpenMateo
@@ -183,7 +184,7 @@ async function getHourlyWeatherData(hour) {
   }
 }
 
-
+//returns high and low temp and the weather type associated for a specific day in the future 1-7
 async function getDailyWeatherData(day) {
   // API Name: OpenMateo API
   // Author: OpenMateo
@@ -192,7 +193,7 @@ async function getDailyWeatherData(day) {
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=7`;
 
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  const UtcDay = days[(new Date().getUTCDay()+day) % 7];
+  const UtcDay = days[(new Date().getUTCDay()+day) % 7]; //gets the appropriate day name
 
   try {
     const response = await fetch(url);
@@ -252,7 +253,7 @@ async function init(userInput) {
 
 
 
-
+//displays weather data on website
 function displayWeather(cityName, currentWeatherData, hourlyData, dailyData){
   let [currentTemp, weather, high, low, currentHumidity, currentWindspeed, precipChance, isDay] = currentWeatherData;
   let background = document.getElementById("weather-container");
